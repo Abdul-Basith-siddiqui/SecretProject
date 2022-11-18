@@ -1,4 +1,6 @@
 //jshint esversion:6
+require('dotenv').config()
+//console.log(process.env)
 const express = require("express");
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
@@ -19,8 +21,9 @@ const userSchema = new mongoose.Schema({  //level-2 authentication -- this sehem
 });
 //Schemas are pluggable, that is, they allow for applying pre-packaged capabilities to extend their functionality. This is a very powerful feature.
 //Plugins are a tool for reusing logic in multiple schemas. Suppose you have several models in your database and want to add a loadedAt property to each one. Just create a plugin once and apply it to each Schema:
-  const secret = "thisisourlitlesecret.";  //encryption key                      //Secret String Instead of Two Keys
-  userSchema.plugin(encrypt,{secret:secret, encryptedFields: ['password']});     //For convenience, you can also pass in a single secret string instead of two keys.
+                                                                                   ///USING ENVIRONMENT VARIABLE
+console.log(process.env.SECRET);
+  userSchema.plugin(encrypt,{secret:process.env.SECRET, encryptedFields: ['password']});
 // schema    plugin  package   object        what to encrypt
 // when document is save() then it encrypt                                       //var secret = process.env.SOME_LONG_UNGUESSABLE_STRING;
 // when find or findOne() use it decript                                          //userSchema.plugin(encrypt, { secret: secret });
