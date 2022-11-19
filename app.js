@@ -21,10 +21,12 @@ const userSchema = new mongoose.Schema({  //level-2 authentication -- this sehem
 });
 //Schemas are pluggable, that is, they allow for applying pre-packaged capabilities to extend their functionality. This is a very powerful feature.
 //Plugins are a tool for reusing logic in multiple schemas. Suppose you have several models in your database and want to add a loadedAt property to each one. Just create a plugin once and apply it to each Schema:
-                                                                                   ///USING ENVIRONMENT VARIABLE
-console.log(process.env.SECRET);
+
+//ceasar cipher, Enigma ceasar and morden (AES)                                     ///USING ENVIRONMENT VARIABLE
+console.log(process.env.SECRET); //password+enykey-cypher method(AES)->cipher text
   userSchema.plugin(encrypt,{secret:process.env.SECRET, encryptedFields: ['password']});
-// schema    plugin  package   object        what to encrypt
+// schema    plugin  package   object                           what to encrypt
+
 // when document is save() then it encrypt                                       //var secret = process.env.SOME_LONG_UNGUESSABLE_STRING;
 // when find or findOne() use it decript                                          //userSchema.plugin(encrypt, { secret: secret });
 
