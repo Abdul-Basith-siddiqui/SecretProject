@@ -22,7 +22,7 @@ app.set("view engine", "ejs");
 
 //order is important here till passport.session
 app.use(session({  //initializing the session and setting some defaults , saves the user  login session
-   secret:"our little secret",
+   secret:process.env.SESSION_KEY,
    resave:false,
    saveUninitialized:false
 }));
@@ -36,7 +36,8 @@ mongoose.connect("mongodb://0.0.0.0:27017/userDB",{useNewUrlParser:true});
 const userSchema = new mongoose.Schema({  //authentication -- this sehema is no longer javascript obj but a mongoose sehema obj , created from mongoose class what we require
   email:String,                          // for more info- https://www.npmjs.com/package/mongoose-encryption
   password:String,
-  googleId:String
+  googleId:String,
+  secret:String
 });
 
 //adding passportLocalMongoose as a plugin into our Schema
@@ -107,12 +108,43 @@ app.get("/login", function(req,res){
 });
 
 app.get("/secrets",(req,res)=>{
+  User.find({"secret":{$ne: null}}, function(err,foundUsers){
+    if(err){
+      console.log(err);
+    }else{
+      if(foundUsers){
+        res.render("secrets", {userWithSecrets:foundUsers});
+      }
+    }
+  });
+});
+
+app.get("/submit",function(req,res){
   if(req.isAuthenticated()){ //from passportLocalMongoose  For any request you can check if a user is authenticated or not using this method.
-    res.render("secrets");
+    res.render("submit");
   }else{
     res.render("login");
   }
 });
+
+app.post("/submit",function(req,res){
+  const submittedpost=req.body.secret;
+     console.log(req.user); //currently login kare so obj print hota
+     User.findById(req.user.id, function(err,foundUser){
+       if(err){
+         console.log(err);
+       }else{
+         if(foundUser){
+           foundUser.secret=submittedpost;
+           foundUser.save(function(){
+             res.redirect("/secrets");
+           });
+         }
+       }
+     });
+});
+
+
 
 app.get("/logout", (req,res)=>{
   req.logout((err)=>{  //from passportLocalMongoose   Invoking logout() will remove the req.user property and clear the login session (if any).
