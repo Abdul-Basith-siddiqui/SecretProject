@@ -37,7 +37,7 @@ app.use(passport.session()); //basically we are saying that passport to manage a
 //mongoose.set("useCreateIndex",true);//error coming needed not necessary
 
 mongoose.connect(
-  "mongodb+srv://NovaKing:keydb@cluster0.ae46b4r.mongodb.net/userDB",
+  `mongodb+srv://NovaKing:${process.env.PASSWORD}@cluster0.ae46b4r.mongodb.net/userDB`,
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
